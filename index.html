@@ -62,7 +62,7 @@
             </div>
             <ol class="parentMethod">
                 <li>
-                    <a href="https://www.ubuntulinux.jp/download/ja-remix">Ubuntu </a>と<a href="https://rufus.ie/ja/"> Rufus </a>を WindowsPC にインストール。
+                    <a href="https://www.ubuntulinux.jp/download/ja-remix" target="_blank">Ubuntu</a> と <a href="https://rufus.ie/ja/" target="_blank">Rufus</a> を WindowsPC にインストール。
                 </li>
                 <li>
                     Rufus を起動してデバイスを USB、ブートの種類をインストールした Ubuntu のファイル、
@@ -175,8 +175,8 @@
                 <div class="explain">
                     <h4>Apache HTTP Server とは</h4>
                     <p>
-                        Apache HTTP Server は、 Apache Software Foundation が開発している
-                        オープンソースソフトウェアのうちの 1 つである。
+                        Apache HTTP Server は、 
+                        Apache Software Foundation が開発しているオープンソースソフトウェアのうちの 1 つである。
                         Linux 環境における Web サーバーとして高いシェアを持っている。
                         本サイトでは、以降 Apache HTTP Server は Apache と呼称する。
                     </p>
@@ -219,20 +219,20 @@ Jul 10 06:25:37 ホスト名 systemd[1]: Starting The Apache HTTP Server...<br>
 Jul 10 06:25:37 ホスト名 systemd[1]: Started The Apache HTTP Server.
                 </pre>
             </div>
-            <p>最後にブラウザから <a href="http://localhost">http://localhost</a> にアクセスし、Apache のウェルカムページが表示されれば完了となる。</p>
+            <p>最後にブラウザから <a href="http://localhost" target="_blank">http://localhost</a> にアクセスし、Apache のウェルカムページが表示されれば完了となる。</p>
             <h4>Apache の設定</h4>
             <p>
                 Apache の設定ファイルは /etc/apache2/apache2.conf や
-                 /etc/apache2/sites-available/000-default.conf で管理される。前者の設定ファイルは
-                サーバ全体に適用するためのグローバル設定ファイル、後者の設定ファイルはデフォルト
-                でアクセスされる仮想ホストに適用するための設定ファイルである。
+                 /etc/apache2/sites-available/000-default.conf で管理される。
+                前者の設定ファイルはサーバ全体に適用するためのグローバル設定ファイル、
+                後者の設定ファイルはデフォルトでアクセスされる仮想ホストに適用するための設定ファイルである。
                 Web ページに関する設定をする場合は基本的に /etc/apache2/sites-available/000-default.conf を変更するか、
                 新たに仮想ホストの設定ファイルを作成する。本サイトでは仮想ホストの設定ファイルを作成する方法を用いる。
                 デフォルトの仮想ホストの設定ファイルを残したまま異なる仮想ホストを作りたい場合は、
                  /etc/apache2/sites-available/ 直下に新たな設定ファイルを作成する。
                 ファイル名を決めて、拡張子を .conf として作成する。(今回はexample.conf)
-                DocumentRoot に指定したディレクトリが存在しない場合や、DirectoryIndex に指定し
-                たファイルが存在しない場合は作成する。
+                DocumentRoot に指定したディレクトリが存在しない場合や、
+                DirectoryIndex に指定したファイルが存在しない場合は作成する。
             </p>
             <div class="program">
                 <button onclick="copyToClipboard('makeSetting')">コピー</button>
@@ -329,7 +329,8 @@ Apache Full (v6) ALLOW Anywhere (v6)
             </div>
             
             <p>
-                <a href="http://localhost">http://localhost</a> にアクセスすることで、構築した Web サーバーにアクセスできる。
+                <a href="http://localhost" target="_blank">http://localhost</a> にアクセスすることで、
+                構築した Web サーバーにアクセスできる。
                 この後は特定のユーザのみが閲覧できる Web ページを作成しなければならない場合に備え、
                 ユーザ名とパスワードによる認証を用いたものを作る。
                 今回は、もっとも簡単な認証方法が基本認証(BASIC 認証)を用いる。
@@ -378,11 +379,11 @@ sudo htpasswd -c /etc/apache2/.htpasswd ユーザ名 # -cは初回のみ
                     <p>
                         認証を追加したいディレクトリに対して、Directory でディレクトリパスを指定する。
                         ここでの注意点は、指定したディレクトリ以下にあるものに対してアクセスするときに認証が必要になるということである。
-                        AuthType は認証方法の種類を表しており、ここでは Basic(基本認証)を指定する。ま
-                        た、AuthName は認証時に表示されるポップアップのタイトル名を表す。AuthUserFile は、
-                        ユーザを登録したファイルのパスを記述する。Require はアクセス可能なユーザを定義する
-                        ためのディレクティブであり、今回は登録されているユーザすべてのアクセスを受け入れる
-                        valid-user としている。
+                        AuthType は認証方法の種類を表しており、ここでは Basic(基本認証)を指定する。
+                        また、AuthName は認証時に表示されるポップアップのタイトル名を表す。AuthUserFile は、
+                        ユーザを登録したファイルのパスを記述する。
+                        Require はアクセス可能なユーザを定義するためのディレクティブであり、
+                        今回は登録されているユーザすべてのアクセスを受け入れる valid-user としている。
                     </p>
                 </div>
             </p>
@@ -404,7 +405,7 @@ sudo htpasswd -c /etc/apache2/.htpasswd ユーザ名 # -cは初回のみ
 sudo systemctl reload apache2
                 </pre>    
             </div>
-            <p><a href="http://localhost">http://localhost</a> にアクセスし、きちんと設定できたが確認する。</p>
+            <p><a href="http://localhost" target="_blank">http://localhost</a> にアクセスし、きちんと設定できたが確認する。</p>
         </div>
 
         <div>
@@ -500,15 +501,20 @@ docker run -dit --name my-apache-app -p 8080:80 -v ./htdocs:/usr/local/apache2/h
                     その内容がアクセス時に表示される。
                 </p>
             </div>
-            <p>後は <a href="http://localhost:8080">http://localhost:8080</a> にアクセスすることでサーバーが構築できたか確認できる。</p>
+            <p>後は <a href="http://localhost:8080" target="_blank">http://localhost:8080</a> にアクセスすることでサーバーが構築できたか確認できる。</p>
         </div>
 
 
         <div>参考文献
             <ol>
                 <li>
-                    <a href="https://www.media.ryukoku.ac.jp/seta/manual/old/ubuntu/linux/linux.html">
+                    <a href="https://www.media.ryukoku.ac.jp/seta/manual/old/ubuntu/linux/linux.html" target="_blank">
                         Linuxマニュアル　Linuxとは
+                    </a>
+                </li>
+                <li>
+                    <a href="https://kb.seeck.jp/archives/19354" target="_blank">
+                        Ubuntu Desktop 22.04 LTS のインストール方法 | SEECK.JP サポート
                     </a>
                 </li>
             </ol>
