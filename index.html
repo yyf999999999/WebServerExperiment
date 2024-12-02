@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="StyleSheet" href="main.css">
+    <title>Webサーバーを構築する手順書</title>
+</head>
+<body>
+    <div id="main">
+        <h1 id="title">Webサーバーを構築する手順書</h1>
+        <p id="title">まっさらなPCにLinux OSを用いてサーバーのーのセットアップをし、Webサーバーを構築する。</p>
+
+        <div>
+            <h2>環境</h2>
+            <p>
+                ハードウェア
+                <ul>
+                    <li>CPU: Intel Pentium G3258, 2コア/2スレッド (ハイパースレッディング非対応), 3.20GHz</li>
+                    <li>メモリ: 4GB DDR3</li>
+                    <li>ストレージ: 500GB HDD (Western Digital Blue, 型番: WD5000AAKX, 回転数: 7200 RPM)</li>
+                    <li>ネットワークカード: Intel Ethernet Connection I217-V (有線)</li>
+                    <li>グラフィックカード: オンボード (Intel HD Graphics 4600)</li>
+                </ul>
+            </p>
+            <p>
+                BIOS/UEFI
+                <ul>
+                    <li>ベンダー: American Megatrends Inc.</li>
+                    <li>バージョン: P2.50 (2015年12月11)</li>
+                    <li>起動モード: UEFI</li>
+                    <li>セキュアブート: 無効</li>
+                </ul>
+            </p>
+            <p>
+                ネットワーク
+                <ul>
+                    <li>接続方法: 有線LAN</li>
+                    <li>IPアドレス: 固定 (10.133.1.35)</li>
+                    <li>DNS: 8.8.8.8</li>
+                </ul>
+            </p>
+            <p>
+                ソフトウェア
+                <ul>
+                    <li>ディストリビューション: Ubuntu 22.04 LTS (Jammy Jellyfish)</li>
+                    <li>インストールメディア: USBメモリ (16GB, Rufusで作成)</li>
+                </ul>
+            </p>
+        </div>
+        <div>
+            <h2>Linuxのインストール</h2>
+            <div class="explain">
+                <h4>Linuxとは</h4>
+                <p>
+                    Linux とは、自由に再配布することができる独立した Unix 系の OS のひとつで、
+                    狭義にはユーザーの指示に従ってプログラムを実行したり、さまざまなデータを管理をしたり、
+                    他のコンピュータと通信したりするものを指す。
+                    1991年当時大学院生だったリーナス・トーバルズ氏によって開発が進められて無償で公開された後、
+                    全世界のボランティアの開発者によって改良が進められて現在にいたった。
+                </p>
+            </div>
+            <ol class="parentMethod">
+                <li>
+                    <a href="https://www.ubuntulinux.jp/download/ja-remix">Ubuntu </a>と<a href="https://rufus.ie/ja/"> Rufus </a>を WindowsPC にインストール。
+                </li>
+                <li>
+                    Rufus を起動してデバイスを USB、ブートの種類をインストールした Ubuntu のファイル、
+                    パーティション構成を GPT、ターゲットシステムを UEFI (CSM 無効) に設定する。<br>
+                    <img src="image/Rufus.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    Ubuntu を入れる PC に USB を差し込み、起動時にF2を連打して BIOS を開く。
+                </li>
+                <li>
+                    BIOS の Boot タブから起動の順番を変更し、USB が最初に起動されるようにする。<br>
+                    <img src="image/BIOSBoot.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    BIOS を閉じ、USB が正常に起動されると以下のような画面が出るので、
+                    Try or Install Ubuntu を選択する。<br>
+                    <img src="image/tryUbuntu.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    Ubuntu のインストーラーを正常に起動出来たら、右の Ubuntuをインスト―ル を選択する。<br>
+                    <img src="image/welcome.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    次にキーボードレイアウトを選択する。(ここでは日本語)<br>
+                    <img src="image/keyboard.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    次にネットワークの設定をするが、有線ならばこれは必要ない。
+                    無線の場合は各自自分の Wi-Fi にあった認証を行う。<br>
+                    <img src="image/network.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    次にアップデートと他のソフトウェアを選択する。
+                    (本サイトでは通常のインストールを選択、Ubuntu のインストール中にアップデートをダウンロードする にチェック)<br>
+                    <img src="image/updateAndSoftware.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    次にインストールの種類を選択する。
+                    (本サイトではディスクを削除して Ubuntu をインストールを選択)<br>
+                    <img src="image/installType.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    次に住んでいる場所を選択する。
+                    (本サイトでは Tokyo を選択)
+                    これは時刻に影響する。<br>
+                    <img src="image/where.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    最後に個人情報やユーザー名を入力して続けるを選択する。
+                    コンピューターの名前とユーザー名はコマンドの実行時に重要となる。<br>
+                    <img src="image/inputInformation.jpg" alt="画像ファイルが読み込めません">
+                </li>
+                <li>
+                    インストールが完了するまで待った後、今すぐ再起動をクリックし、
+                    Please remove the installation medium, then press ENTER: と表示されたらUSBを抜く。
+                </li>
+                <li>
+                    起動するまで待ち、少し設定するかスキップするかした後次のような画面が出てくれば成功。<br>
+                    <img src="image/desktop.png" alt="画像ファイルが読み込めません">
+                </li>
+            </ol>
+        </div>
+
+        <!--
+        <div>
+            <h2>Linuxの概要</h2>
+            <h4>Linuxとは</h4>
+            <p>
+                Linux とは、当時大学生であったリーナス・トーバルズ氏らによって提案・開発された OS で、
+                狭義にはユーザーの指示に従ってプログラムを実行したり、さまざまなデータを管理をしたり、
+                他のコンピュータと通信するための制御プログラムを指す。
+                現在でもオープンソースとして誰もが無償で入手・利用することができることから広く利用されており、
+                スマートフォン・タブレットの OS である Android や組込み機器の Raspberry Pi などは Linux をベース OS として採用している。
+            </p>
+            <h4>ディストリビューションとは</h4>
+            <p>
+                ディストリビューションとは、カーネルやシェル、ユーザインターフェースに加えインスト
+                ーラを含めたパッケージのことを指す。Linux ディストリビューションには、おもに Red Hat
+                系とDebian系の2種類が存在する。Red Hat系の代表例として、Red Hat Enterprise Linux、
+                CentOS、Rocky Linux などがある。Debian 系では、Debian GNU/Linux、Ubuntu、Linux
+                Mint などがある。本実習では、Ubuntu ディストリビューションを用いる。
+            </p>
+            <h4>カーネルとは</h4>
+            <p>
+                カーネルとは、ハードウェアやシステム上で動作するプログラムを管理するシステムの中核で、メモリ管理、デバイス管理、
+                プロセス管理、割込み管理、ネットワーク機能、ファイルシステム、ファイアウォールなどを担う。
+            </p>
+            <h4>シェルとは</h4>
+            <p>
+                シェルとは、カーネルとユーザを仲介するインターフェイスで、コマンド入力を受付けて処理を実行する役割な
+                どを担う。
+            </p>
+            <h4>コマンドとは</h4>
+            <p>
+                コマンドとは、シェルを介して実行するプログラムのことである。 Linux には数千にもなるコマンドが存在するが、
+                基本的なコマンドは 50 程度になる。
+            </p>
+            <h4>ライブラリとは</h4>
+            <p>
+                プログラムの共通部分を集約し一つの機能としたもので、
+                Linux では glibc という C 言語のライブラリが利用されている。
+            </p>
+        </div>
+        -->
+
+        <div>
+            <h2>Apacheを用いたWebサーバーの構築</h2>
+            <h4>Apache HTTP Server のインストール</h4>
+            <p>本サイトでは、Apache HTTP Server をインストールしサーバー構築を試みる。
+                <div class="explain">
+                    <h4>Apache HTTP Server とは</h4>
+                    <p>
+                        Apache HTTP Server は、 Apache Software Foundation が開発している
+                        オープンソースソフトウェアのうちの 1 つである。
+                        Linux 環境における Web サーバーとして高いシェアを持っている。
+                        本サイトでは、以降 Apache HTTP Server は Apache と呼称する。
+                    </p>
+                </div>
+            </p>
+            <p>Apache のインストールは以下のコマンドを実行する。</p>
+            <div class="program">
+                <button onclick="copyToClipboard('installApache')">コピー</button>
+                <pre id="installApache">
+sudo apt update # インストール前にパッケージの更新<br>
+sudo apt -y install apache2 # Apache HTTP Server のインストール
+                </pre>
+            </div>
+            <p>インストールが完了した後は、Apache の起動をしサーバーのステータスを確認する。</p>
+            <div class="program">
+                <button onclick="copyToClipboard('runApache')">コピー</button>
+                <pre id="runApache">
+sudo systemctl start apache2 # Apache の起動<br>
+sudo systemctl enable apache2 # Apache の自動起動の有効化<br>
+sudo systemctl status apache2 # Apache のステータス
+                </pre>
+            </div>
+
+            <p>active (running)と表示されれば成功である。</p>
+            <div class="program">
+                <pre>
+● apache2.service - The Apache HTTP Server<br>
+Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor<br>
+preset: enabled)<br>
+Active: <span style="color:green">active (running)</span> since Wed 2024-07-10 06:25:37 JST; 9h ago<br>
+Docs: https://httpd.apache.org/docs/2.4/<br>
+Main PID: 202028 (apache2)<br>
+Tasks: 55 (limit: 9098)<br>
+Memory: 20.8M<br>
+CGroup: /system.slice/apache2.service<br>
+├─202028 /usr/sbin/apache2 -k start<br>
+├─202030 /usr/sbin/apache2 -k start<br>
+└─202031 /usr/sbin/apache2 -k start<br>
+Jul 10 06:25:37 ホスト名 systemd[1]: Starting The Apache HTTP Server...<br>
+Jul 10 06:25:37 ホスト名 systemd[1]: Started The Apache HTTP Server.
+                </pre>
+            </div>
+            <p>最後にブラウザから <a href="http://localhost">http://localhost</a> にアクセスし、Apache のウェルカムページが表示されれば完了となる。</p>
+            <h4>Apache の設定</h4>
+            <p>
+                Apache の設定ファイルは /etc/apache2/apache2.conf や
+                 /etc/apache2/sites-available/000-default.conf で管理される。前者の設定ファイルは
+                サーバ全体に適用するためのグローバル設定ファイル、後者の設定ファイルはデフォルト
+                でアクセスされる仮想ホストに適用するための設定ファイルである。
+                Web ページに関する設定をする場合は基本的に /etc/apache2/sites-available/000-default.conf を変更するか、
+                新たに仮想ホストの設定ファイルを作成する。本サイトでは仮想ホストの設定ファイルを作成する方法を用いる。
+                デフォルトの仮想ホストの設定ファイルを残したまま異なる仮想ホストを作りたい場合は、
+                 /etc/apache2/sites-available/ 直下に新たな設定ファイルを作成する。
+                ファイル名を決めて、拡張子を .conf として作成する。(今回はexample.conf)
+                DocumentRoot に指定したディレクトリが存在しない場合や、DirectoryIndex に指定し
+                たファイルが存在しない場合は作成する。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('makeSetting')">コピー</button>
+                <pre id="makeSetting">
+sudo touch /etc/apache2/sites-available/example.conf
+                </pre>
+            </div>
+            <p>
+                作成した設定ファイルに以下の内容を記述する。
+                ディレクトリパス(今回は/var/www/html)には自身がコンテンツをデプロイするディレクトリを指定し、
+                ファイル名(今回はindex.html)にはトップページとして表示したいファイルを指定している。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('settingApache')">コピー</button>
+                <pre id="settingApache">
+&lt;VirtualHost *:80&gt;
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+    DirectoryIndex index.html
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;
+                </pre>
+            </div>
+            <p>
+                DocumentRoot に指定したディレクトリが存在しない場合や、
+                DirectoryIndex に指定したファイルが存在しない場合は作成する。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('makePage')">コピー</button>
+                <pre id="makePage">
+sudo mkdir -p /var/www/html<br>
+sudo touch /var/www/html/index.html<br>
+sudo vi /var/www/html/index.html
+                </pre>
+                <button onclick="copyToClipboard('samplePage')">コピー</button>
+                <pre id="samplePage">
+&lt;--/var/www/html/index.htmlに記述するサンプル--&gt;<br>
+&lt;html&gt;<br>
+    &lt;body&gt;<br>
+        &lt;h1&gt;Welcome to my page&lt;/h1&gt;<br>
+    &lt;/body&gt;<br>
+&lt;/html&gt;
+                </pre>
+            </div>
+
+            <p>
+                作成した仮想ホストを Web サーバに反映させるために、仮想ホストを有効化をする。
+                a2ensite コマンドは、設定ファイルのシンボリックリンクを /etc/apache2/sites-enable/ に作成するコマンドである。
+                これによって、新しく作成した仮想ホストを Web サーバにエントリーしたことになり、
+                Apache の再起動を行うとエントリした仮想ホストを反映させることができる。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('enableHost')">コピー</button>
+                <pre id="enableHost">
+sudo a2ensite example.conf # 仮想ホストの有効化<br>
+sudo systemctl reload apache2 # 有効化した仮想ホストをサーバに反映
+                </pre>
+            </div>
+            <p>
+                エントリーしている仮想ホストを除外したい場合は、a2dissite コマンドを利用する。
+                今回は、作成した仮想ホストと干渉することを防ぐためにデフォルトの仮想ホストを無効化する。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('disableHost')">コピー</button>
+                <pre id="disableHost">
+sudo a2dissite 000-default.conf # 仮想ホストの無効化<br>
+sudo systemctl reload apache2 # 有効化した仮想ホストをサーバに反映
+                </pre>
+            </div>
+            <h4>ファイアウォールの設定</h4>
+            <p>
+                構築した Web サーバーへのアクセスを許可するには、ファイアウォールの設定を変更する必要がある。
+                Ubuntu では、ファイアウォールの設定に ufw コマンドを利用する。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('enableFiteWall')">コピー</button>
+                <pre id="enableFiteWall">
+sudo ufw enable # ファイアウォールの有効化<br>
+sudo ufw allow "Apache Full" # 80 番ポートと 443 番ポートの同時開放<br>
+sudo ufw status
+                </pre>
+            </div>
+            <p>正常に実行できていれば、ステータスを確認した際に下記のような実行結果が得られる。</p>
+            <div class="program">
+                <pre>
+Status: active<br>
+<br>
+To Action From<br>
+-- ------ ----<br>
+Apache Full ALLOW Anywhere<br>
+Apache Full (v6) ALLOW Anywhere (v6)
+                </pre>
+            </div>
+            
+            <p>
+                <a href="http://localhost">http://localhost</a> にアクセスすることで、構築した Web サーバーにアクセスできる。
+                この後は特定のユーザのみが閲覧できる Web ページを作成しなければならない場合に備え、
+                ユーザ名とパスワードによる認証を用いたものを作る。
+                今回は、もっとも簡単な認証方法が基本認証(BASIC 認証)を用いる。
+                <div class="explain">
+                    <h4>基本認証とは</h4>
+                    <p>
+                        基本認証は、あらかじめ Apache にユーザ名とパスワードを登録しておき、
+                        特定のディレクトリ配下にアクセスする場合に認証を求める仕組みである。
+                    </p>
+                </div>
+                まず、基本認証を利用するためのパッケージのインストールを行う。
+                ここでは、apache2-utils パッケージをインストールする。
+                <div class="explain">
+                    <h4>補足</h4>
+                    <p>
+                        最新バージョンでは、apache2 のインストールに含まれており、
+                        apache2-utils を別途インストールする必要がない。
+                        しかし、バージョンや環境によっては含まれていない可能性もあるため、
+                        念のため実行しておくとよい。
+                    </p>
+                </div>
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('instalUtils')">コピー</button>
+                <pre id="instalUtils">
+sudo apt install apache2-utils
+                </pre>
+            </div>
+            <p>
+                apache2-utils には htpasswd コマンドが含まれており、
+                このコマンドを使ってユーザ登録を行う。
+                インストールしてからこれまでにユーザ登録を行ったことがない場合は、
+                -c オプションを追加する。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('certificationUser')">コピー</button>
+                <pre id="certificationUser">
+sudo htpasswd -c /etc/apache2/.htpasswd ユーザ名 # -cは初回のみ
+                </pre>    
+            </div>
+            <p>
+                次に、認証を利用する仮想ホストの設定ファイルにディレクティブを追加する。
+                今回は&lt;VirtualHost *:80&gt;内部の一番下に入れるとよい。
+                <div class="explain">
+                    <h4>設定の解説</h4>
+                    <p>
+                        認証を追加したいディレクトリに対して、Directory でディレクトリパスを指定する。
+                        ここでの注意点は、指定したディレクトリ以下にあるものに対してアクセスするときに認証が必要になるということである。
+                        AuthType は認証方法の種類を表しており、ここでは Basic(基本認証)を指定する。ま
+                        た、AuthName は認証時に表示されるポップアップのタイトル名を表す。AuthUserFile は、
+                        ユーザを登録したファイルのパスを記述する。Require はアクセス可能なユーザを定義する
+                        ためのディレクティブであり、今回は登録されているユーザすべてのアクセスを受け入れる
+                        valid-user としている。
+                    </p>
+                </div>
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('editSetting')">コピー</button>
+                <pre id="editSetting">
+&lt;Directory "/var/www/html"&gt;<br>
+    AuthType Basic<br>
+    AuthName "Restricted Content"<br>
+    AuthUserFile /etc/apache2/.htpasswd<br>
+    Require valid-user<br>
+&lt;/Directory&gt;
+                </pre>    
+            </div>
+            <p>変更が完了した後は、Apache を再起動する。</p>
+            <div class="program">
+                <button onclick="copyToClipboard('reloadApache')">コピー</button>
+                <pre id="reloadApache">
+sudo systemctl reload apache2
+                </pre>    
+            </div>
+            <p><a href="http://localhost">http://localhost</a> にアクセスし、きちんと設定できたが確認する。</p>
+        </div>
+
+        <div>
+            <h2>Dockerを用いたWebサーバーの構築</h2>
+            <div class="explain">
+                <h4>Docker とは</h4>
+                <p>
+                    Docker は仮想化技術の一つであるコンテナ型仮想化を提供するソフトウェアであり、
+                    物理マシン上で動作し、コンテナと呼ばれる実行環境を管理する。
+                    従来のホスト型仮想化と異なって構築されるコンテナにはゲスト OS を必要としないという特徴があり、
+                    リソース効率が良く計算処理のオーバーヘッドが少ない。
+                    また、イメージと呼ばれる環境を再現するためのアーカイブファイルがあり、
+                    イメージを利用することで自身の環境を汚すことなく手軽に環境構築することができる。
+                    ホスト OS は Linux であることが要求される。
+                </p>
+            </div>
+            <h4>Docker のインストール</h4>
+            <p>Ubuntu で Docker をインストールする場合は以下の手順でコマンドを実行する。</p>
+            <div class="program">
+                <button onclick="copyToClipboard('installDocker')">コピー</button>
+                <pre id="installDocker">
+# Add Docker's official GPG key:<br>
+sudo apt-get update<br>
+sudo apt-get install ca-certificates curl<br>
+sudo install -m 0755 -d /etc/apt/keyrings<br>
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc<br>
+sudo chmod a+r /etc/apt/keyrings/docker.asc<br>
+<br>
+# Add the repository to Apt sources:<br>
+echo \<br>
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \<br>
+$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \<br>
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null<br>
+sudo apt-get update<br>
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+                </pre>    
+            </div>
+            <p>
+                インストールできたかどうか確認するために、バージョンと起動状態の確認を行う。
+                状態を確認した際に、active や enabled になっていなければ、自身で起動などを行う。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('versionDocker')">コピー</button>
+                <pre id="versionDocker">
+sudo docker --version<br>
+sudo systemctl status docker
+                </pre>    
+            </div>
+            <p>今後、docker コマンドをユーザで実行したい場合は、docker グループにユーザを追加しておくとよい。</p>
+            <div class="program">
+                <button onclick="copyToClipboard('userDocker')">コピー</button>
+                <pre id="userDocker">
+sudo usermod -aG docker $USER<br>
+newgrp docker
+                </pre>    
+            </div>
+            <h4>Web サーバの構築の実践</h4>
+            <p>
+                Docker はコンテナを作成し手軽に Web サーバの構築ができる。
+                httpdとして公開されているイメージを用いてコンテナを起動することで、
+                Web サーバを起動することができるのである。
+                まずWeb サーバのコンテンツの管理などのためのディレクトリを作成し、
+                その直下に html や設定ファイルを管理するためのディレクトリを作成する。
+                (今回はディレクトリ名を mywebsite とする)
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('settingDocker')">コピー</button>
+                <pre id="settingDocker">
+mkdir -p ~/mywebsite/htdocs ~/mywebsite/conf
+                </pre>    
+            </div>
+            <p>
+                次に、httpd イメージを使いコンテナを起動させる。
+            </p>
+            <div class="program">
+                <button onclick="copyToClipboard('httpdDocker')">コピー</button>
+                <pre id="httpdDocker">
+cd ~/mywebsite
+docker run -dit --name my-apache-app -p 8080:80 -v ./htdocs:/usr/local/apache2/htdocs/ -v ./conf:/usr/apache2/conf httpd:2.4
+                </pre>    
+            </div>
+            
+            <div class="explain">
+                <h4>解説</h4>
+                <p>
+                    -p 8080:80 はホストマシンの 8080 番ポートとコンテナの 80 番ポートをバインドさせており、
+                    これによって外部から通信を受け取れるようになる。<br>
+                    -v ./htdocs:/usr/local/apache2/htdocs/ や -v ./conf:/usr/apache2/conf は、
+                    ホストマシンとコンテナ間のファイルをマウントしている。
+                    これにより、ホストマシン側の ~/mywebsite/htdocs や ~/mywebsite/conf 
+                    に配置されたファイルがコンテナに反映されるようになる。
+                    例えば、 ~/mywebsite/htdocs の直下に Hello, World と記述された index.html を配置すると、
+                    その内容がアクセス時に表示される。
+                </p>
+            </div>
+            <p>後は <a href="http://localhost:8080">http://localhost:8080</a> にアクセスすることでサーバーが構築できたか確認できる。</p>
+        </div>
+
+
+        <div>参考文献
+            <ol>
+                <li>
+                    <a href="https://www.media.ryukoku.ac.jp/seta/manual/old/ubuntu/linux/linux.html">
+                        Linuxマニュアル　Linuxとは
+                    </a>
+                </li>
+            </ol>
+        </div>
+
+        <script>
+            function copyToClipboard(copyText) {
+                const text = document.getElementById(copyText).textContent;
+
+                navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('内容がコピーされました');
+                })
+                .catch(err => {
+                    console.error('コピーに失敗しました:', err);
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>
